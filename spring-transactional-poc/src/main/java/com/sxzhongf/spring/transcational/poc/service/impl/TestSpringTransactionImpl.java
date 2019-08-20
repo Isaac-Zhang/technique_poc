@@ -118,7 +118,7 @@ public class TestSpringTransactionImpl implements ITestSpringTransation {
 
     @Transactional
     public void saveNonTransactionalEntity() {
-        transactionDao.save(TestTransactionEntity.builder().name("saveEntity").build());
+        transactionDao.save(TestTransactionEntity.builder().name("saveNonTransactionalEntity").build());
         throw new RuntimeException();
     }
 
