@@ -8,32 +8,45 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+
 /**
- * TestSpringTransationImpl for TODO
+ * TestSpringTransactionImpl for 测试事务service, 事务不能出现在controller中
  *
  * @author <a href="mailto:magicianisaac@gmail.com">Isaac.Zhang | 若初</a>
  * @since 2019/8/20
  */
 @Slf4j
 @Service
-public class TestSpringTransationImpl implements ITestSpringTransation {
+public class TestSpringTransactionImpl implements ITestSpringTransation {
 
     @Autowired
     private TestTransactionDao transactionDao;
 
     @Override
+    public Collection<TestTransactionEntity> findByName(String name) {
+        Collection<TestTransactionEntity> entity = transactionDao.findByName(name);
+        return entity;
+    }
+
+    @Override
     public void catchExceptionNoRollback() {
         try {
-            transactionDao.save(new TestTransactionEntity().builder().name("Isaac").build());
+            transactionDao.save(new TestTransactionEntity().builder().name("Isaac Runtime").build());
             throw new RuntimeException();
         } catch (RuntimeException ex) {
             //主动捕获异常以后，程序认为没有发生错误，就不会主动回滚事务
-            log.error("TestSpringTransationImpl :: catchExceptionNoRollback error msg : {}", ex.getMessage());
+            log.error("TestSpringTransactionImpl :: catchExceptionNoRollback error msg : {}", ex.getStackTrace());
         }
     }
 
     @Override
     public void catchNonRuntimeExceptionNoRollback() throws CustomException {
-
+        try {
+            transactionDao.save(new TestTransactionEntity().builder().name("Isaac NonRuntime").build());
+            throw new RuntimeException();
+        } catch (RuntimeException ex) {
+            throw new CustomException(ex.getMessage());
+        }
     }
 }

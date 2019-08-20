@@ -3,6 +3,8 @@ package com.sxzhongf.spring.transcational.poc.dao;
 import com.sxzhongf.spring.transcational.poc.entity.TestTransactionEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Collection;
+
 /**
  * TestTransactionDao for 数据库操作类
  *
@@ -10,4 +12,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @since 2019/8/20
  */
 public interface TestTransactionDao extends JpaRepository<TestTransactionEntity, Long> {
+
+    Collection<TestTransactionEntity> findByName(String name);
 }

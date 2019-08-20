@@ -1,6 +1,9 @@
 package com.sxzhongf.spring.transcational.poc.service;
 
+import com.sxzhongf.spring.transcational.poc.entity.TestTransactionEntity;
 import com.sxzhongf.spring.transcational.poc.exception.CustomException;
+
+import java.util.Collection;
 
 /**
  * ITestSpringTransation for Spring Transaction 测试接口
@@ -9,6 +12,11 @@ import com.sxzhongf.spring.transcational.poc.exception.CustomException;
  * @since 2019/8/20
  */
 public interface ITestSpringTransation {
+
+    /**
+     * 根据名称查询记录
+     */
+    Collection<TestTransactionEntity> findByName(String name);
 
     /**
      * 主动捕获异常，事务不能回滚
