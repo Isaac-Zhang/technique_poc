@@ -92,8 +92,13 @@ public class TestSpringTransactionImpl implements ITestSpringTransation {
             //程序报错之后，Spring 会将当前事务标记为rollback-only
             //org.springframework.transaction.UnexpectedRollbackException:
             //Transaction silently rolled back because it has been marked as rollback-only
+            //这个时候其实是因为事务处理失败而报错了，不是事务正常回滚，为了解决这个问题
+            //连接下文
         } catch (Exception e) {
             e.printStackTrace();
+            //为了解决上面的异常信息，我们需要主动的向外抛出异常信息，这个时候spring的事务机制就能捕获到错误异常
+            //从而主动发起事务回滚
+            throw e;
         }
     }
 
