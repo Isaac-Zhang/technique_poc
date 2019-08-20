@@ -67,4 +67,9 @@ public class SpringTransactionTest {
     public void testSetRollbackOnlyCanRollback() {
         testSpringTransation.setRollbackOnlyCanRollback();
     }
+
+    @Test
+    public void testNonTransactionNoRollback(){
+        testSpringTransation.nonTransactionNoRollback();
+    }
 }
