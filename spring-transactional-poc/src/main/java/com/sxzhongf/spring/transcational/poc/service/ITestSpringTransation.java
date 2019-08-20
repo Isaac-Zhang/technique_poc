@@ -44,4 +44,10 @@ public interface ITestSpringTransation {
      * 可以自动回滚事务
      */
     void setRollbackOnlyCanRollback();
+
+    /**
+     * 同一个实现类中，不标注事务的方法调用标注了@Transactional的方法
+     * 事务失效（前提是在同一个类中）
+     */
+    void nonTransactionNoRollback();
 }

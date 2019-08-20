@@ -106,4 +106,20 @@ public class TestSpringTransactionImpl implements ITestSpringTransation {
     public void saveEntity() {
         transactionDao.save(TestTransactionEntity.builder().name("saveEntity").build());
     }
+
+    /**
+     * 同一个实现类中，不标注事务的方法调用标注了@Transactional的方法
+     * 事务失效（前提是在同一个类中）
+     */
+    @Override
+    public void nonTransactionNoRollback() {
+        saveNonTransactionalEntity();
+    }
+
+    @Transactional
+    public void saveNonTransactionalEntity() {
+        transactionDao.save(TestTransactionEntity.builder().name("saveEntity").build());
+        throw new RuntimeException();
+    }
+
 }
