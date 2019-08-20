@@ -2,6 +2,7 @@ package com.sxzhongf.spring.transcational.poc.service;
 
 import com.sxzhongf.spring.transcational.poc.entity.TestTransactionEntity;
 import com.sxzhongf.spring.transcational.poc.exception.CustomException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 
@@ -27,4 +28,20 @@ public interface ITestSpringTransation {
      * 非 unchecked exception,事务无法回滚
      */
     void catchNonRuntimeExceptionNoRollback() throws CustomException;
+
+    /**
+     * unchecked异常，spring可以自动异常事务回滚
+     */
+    void catchRuntimeCanRollback();
+
+    /**
+     * {@link Transactional} 指定的异常，spring可以自动回滚事务
+     */
+    void specifiedExceptionCanRollback() throws CustomException;
+
+    /**
+     * 设置 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+     * 可以自动回滚事务
+     */
+    void setRollbackOnlyCanRollback();
 }

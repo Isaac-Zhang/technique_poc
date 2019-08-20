@@ -38,13 +38,14 @@ public class TestSpringTransactionImpl implements ITestSpringTransation {
     @Transactional
     public void catchExceptionNoRollback() {
         try {
-            transactionDao.save(TestTransactionEntity.builder().name("Isaac Runtime").build());
+            transactionDao.save(TestTransactionEntity.builder().name("catchExceptionNoRollback").build());
             throw new RuntimeException();
-        } catch (RuntimeException ex) {
+        } catch (Exception ex) {
             //主动捕获异常以后，程序认为没有发生错误，就不会主动回滚事务
             log.error("TestSpringTransactionImpl :: catchExceptionNoRollback error msg : {}", ex.getCause());
 
             //因为不会自动回滚，如果我们需要回滚事务，需要设置当前事务状态
+            //尽量不要这么实现（因为将Spring的编码与业务代码耦合在了一起）
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
     }
@@ -53,10 +54,45 @@ public class TestSpringTransactionImpl implements ITestSpringTransation {
     @Transactional
     public void catchNonRuntimeExceptionNoRollback() throws CustomException {
         try {
-            transactionDao.save(TestTransactionEntity.builder().name("Isaac NonRuntime").build());
+            transactionDao.save(TestTransactionEntity.builder().name("catchNonRuntimeExceptionNoRollback").build());
+            throw new RuntimeException();
+        } catch (Exception ex) {
+            throw new CustomException(ex.getMessage());
+        }
+    }
+
+    @Override
+    @Transactional
+    public void catchRuntimeCanRollback() {
+        transactionDao.save(TestTransactionEntity.builder().name("catchRuntimeCanRollback").build());
+        throw new RuntimeException();
+    }
+
+    @Override
+    @Transactional(rollbackFor = {CustomException.class})
+    public void specifiedExceptionCanRollback() throws CustomException {
+        try {
+            transactionDao.save(TestTransactionEntity.builder().name("specifiedExceptionCanRollback").build());
             throw new RuntimeException();
         } catch (RuntimeException ex) {
             throw new CustomException(ex.getMessage());
         }
+    }
+
+    @Override
+    @Transactional
+    public void setRollbackOnlyCanRollback() {
+        saveEntity();
+        try {
+            //不设置名称，让程序报错
+            transactionDao.save(TestTransactionEntity.builder().build());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Transactional
+    public void saveEntity() {
+        transactionDao.save(TestTransactionEntity.builder().name("saveEntity").build());
     }
 }
