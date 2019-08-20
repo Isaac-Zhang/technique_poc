@@ -37,9 +37,9 @@ public class SpringTransactionTest {
     public void testCatchExceptionNoRollback() {
         // 执行函数
         testSpringTransation.catchExceptionNoRollback();
-        List<TestTransactionEntity> entity = (List<TestTransactionEntity>) testSpringTransation.findByName("Isaac Runtime");
+        List<TestTransactionEntity> entity = (List<TestTransactionEntity>) testSpringTransation.findByName("catchExceptionNoRollback");
         if (CollectionUtils.isEmpty(entity)) System.out.println("The database saved failed!");
-        assert entity.get(0).getName().equals("Isaac Runtime");
+        assert entity.get(0).getName().equals("catchExceptionNoRollback");
         System.out.println("The database saved : Runtime " + JSON.toJSONString(entity));
     }
 
@@ -47,9 +47,24 @@ public class SpringTransactionTest {
     public void testCatchNonExceptionNoRollback() throws CustomException {
         // 执行函数
         testSpringTransation.catchNonRuntimeExceptionNoRollback();
-        List<TestTransactionEntity> entity = (List<TestTransactionEntity>) testSpringTransation.findByName("Isaac NonRuntime");
+        List<TestTransactionEntity> entity = (List<TestTransactionEntity>) testSpringTransation.findByName("catchNonRuntimeExceptionNoRollback");
         if (CollectionUtils.isEmpty(entity)) System.out.println("The database saved failed!");
-        assert entity.get(0).getName().equals("Isaac NonRuntime");
+        assert entity.get(0).getName().equals("catchNonRuntimeExceptionNoRollback");
         System.out.println("The database saved : NonRuntime " + JSON.toJSONString(entity));
+    }
+
+    @Test
+    public void testCatchRuntimeCanRollback() {
+        testSpringTransation.catchRuntimeCanRollback();
+    }
+
+    @Test
+    public void testSpecifiedExceptionCanRollback() throws CustomException {
+        testSpringTransation.specifiedExceptionCanRollback();
+    }
+
+    @Test
+    public void testSetRollbackOnlyCanRollback() {
+        testSpringTransation.setRollbackOnlyCanRollback();
     }
 }

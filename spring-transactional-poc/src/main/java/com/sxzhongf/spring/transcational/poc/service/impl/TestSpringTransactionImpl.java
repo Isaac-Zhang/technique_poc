@@ -81,11 +81,17 @@ public class TestSpringTransactionImpl implements ITestSpringTransation {
 
     @Override
     @Transactional
+    /**
+     * 因为spring 事务的传播性，会将2个事务合二为一
+     */
     public void setRollbackOnlyCanRollback() {
         saveEntity();
         try {
             //不设置名称，让程序报错
             transactionDao.save(TestTransactionEntity.builder().build());
+            //程序报错之后，Spring 会将当前事务标记为rollback-only
+            //org.springframework.transaction.UnexpectedRollbackException:
+            //Transaction silently rolled back because it has been marked as rollback-only
         } catch (Exception e) {
             e.printStackTrace();
         }
