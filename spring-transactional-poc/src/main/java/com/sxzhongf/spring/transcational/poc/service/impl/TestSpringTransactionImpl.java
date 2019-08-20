@@ -7,6 +7,7 @@ import com.sxzhongf.spring.transcational.poc.service.ITestSpringTransation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 
@@ -20,30 +21,35 @@ import java.util.Collection;
 @Service
 public class TestSpringTransactionImpl implements ITestSpringTransation {
 
-    @Autowired
-    private TestTransactionDao transactionDao;
+    private final TestTransactionDao transactionDao;
 
-    @Override
-    public Collection<TestTransactionEntity> findByName(String name) {
-        Collection<TestTransactionEntity> entity = transactionDao.findByName(name);
-        return entity;
+    @Autowired
+    public TestSpringTransactionImpl(TestTransactionDao transactionDao) {
+        this.transactionDao = transactionDao;
     }
 
     @Override
+    public Collection<TestTransactionEntity> findByName(String name) {
+        return transactionDao.findByName(name);
+    }
+
+    @Override
+    @Transactional
     public void catchExceptionNoRollback() {
         try {
-            transactionDao.save(new TestTransactionEntity().builder().name("Isaac Runtime").build());
+            transactionDao.save(TestTransactionEntity.builder().name("Isaac Runtime").build());
             throw new RuntimeException();
         } catch (RuntimeException ex) {
             //主动捕获异常以后，程序认为没有发生错误，就不会主动回滚事务
-            log.error("TestSpringTransactionImpl :: catchExceptionNoRollback error msg : {}", ex.getStackTrace());
+            log.error("TestSpringTransactionImpl :: catchExceptionNoRollback error msg : {}", ex.getCause());
         }
     }
 
     @Override
+    @Transactional
     public void catchNonRuntimeExceptionNoRollback() throws CustomException {
         try {
-            transactionDao.save(new TestTransactionEntity().builder().name("Isaac NonRuntime").build());
+            transactionDao.save(TestTransactionEntity.builder().name("Isaac NonRuntime").build());
             throw new RuntimeException();
         } catch (RuntimeException ex) {
             throw new CustomException(ex.getMessage());
