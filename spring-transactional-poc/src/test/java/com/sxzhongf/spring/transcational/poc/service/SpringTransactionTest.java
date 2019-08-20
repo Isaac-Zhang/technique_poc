@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
 import java.util.List;
@@ -37,6 +38,7 @@ public class SpringTransactionTest {
         // 执行函数
         testSpringTransation.catchExceptionNoRollback();
         List<TestTransactionEntity> entity = (List<TestTransactionEntity>) testSpringTransation.findByName("Isaac Runtime");
+        if (CollectionUtils.isEmpty(entity)) System.out.println("The database saved failed!");
         assert entity.get(0).getName().equals("Isaac Runtime");
         System.out.println("The database saved : Runtime " + JSON.toJSONString(entity));
     }
@@ -46,6 +48,7 @@ public class SpringTransactionTest {
         // 执行函数
         testSpringTransation.catchNonRuntimeExceptionNoRollback();
         List<TestTransactionEntity> entity = (List<TestTransactionEntity>) testSpringTransation.findByName("Isaac NonRuntime");
+        if (CollectionUtils.isEmpty(entity)) System.out.println("The database saved failed!");
         assert entity.get(0).getName().equals("Isaac NonRuntime");
         System.out.println("The database saved : NonRuntime " + JSON.toJSONString(entity));
     }

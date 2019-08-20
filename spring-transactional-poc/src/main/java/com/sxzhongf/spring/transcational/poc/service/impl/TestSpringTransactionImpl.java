@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.Collection;
 
@@ -42,6 +43,9 @@ public class TestSpringTransactionImpl implements ITestSpringTransation {
         } catch (RuntimeException ex) {
             //主动捕获异常以后，程序认为没有发生错误，就不会主动回滚事务
             log.error("TestSpringTransactionImpl :: catchExceptionNoRollback error msg : {}", ex.getCause());
+
+            //因为不会自动回滚，如果我们需要回滚事务，需要设置当前事务状态
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
     }
 
